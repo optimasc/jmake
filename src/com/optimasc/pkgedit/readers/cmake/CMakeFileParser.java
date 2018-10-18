@@ -117,6 +117,14 @@ public class CMakeFileParser
     tokenizer = new StreamTokenizer(new InputStreamReader(new FileInputStream(filespec),
         "US-ASCII"));
     commands = new Vector<CMakeCommand>();
+
+    tokenizer.resetSyntax();
+    tokenizer.wordChars('a', 'z');
+    tokenizer.wordChars('A', 'Z');
+    tokenizer.wordChars(128 + 32, 255);
+    tokenizer.whitespaceChars(0, ' ');
+    tokenizer.quoteChar('"');
+    tokenizer.quoteChar('\'');
     tokenizer.commentChar(COMMENT_CHAR);
     tokenizer.wordChars('_', '_');
     tokenizer.wordChars('$', '$');
@@ -124,6 +132,7 @@ public class CMakeFileParser
     tokenizer.wordChars('}', '}');
     tokenizer.wordChars('/', '/');
     tokenizer.wordChars('=','=');
+    tokenizer.wordChars('.','.');
     tokenizer.eolIsSignificant(true);
     tokenizer.lowerCaseMode(false);
     filename = new File(filespec).getName();
