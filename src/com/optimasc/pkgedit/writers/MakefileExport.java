@@ -26,13 +26,18 @@ public class MakefileExport implements ProjectWriter
   public static final String LINKER_LIBPATH_FLAG = "-L";
   public static final String LINKER_LIBRARY_FLAG = "-l";
   
+  public static final String FILENAME = "Makefile";
+  
   /* Internal macros */
   protected Hashtable<String,String> macros;
+  protected String outFile;
   
   
-  public MakefileExport()
+  public MakefileExport(String outFile)
   {
     macros = new Hashtable<String, String>();
+    this.outFile = outFile;
+    
   }
 
   @Override
@@ -93,10 +98,10 @@ public class MakefileExport implements ProjectWriter
       
       if (counter == 0)
       {
-        ps = new PrintStream("Makefile");
+        ps = new PrintStream(outFile);
       } else
       {
-        ps = new PrintStream("Makefile"+Integer.toString(counter));
+        ps = new PrintStream(outFile+Integer.toString(counter));
       }
       
       /** WRITE ALL INTERNAL MACROS FIRST */
