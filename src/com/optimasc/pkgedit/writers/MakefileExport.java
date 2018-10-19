@@ -185,6 +185,10 @@ public class MakefileExport implements ProjectWriter
       ps.println();
       
       /** Generates all source files */
+      
+      /** If there is no path location, then we use suffix rules,
+       *  otherwise we might right done manually each rule!!!
+       */
       for (int k = 0; k < sources.size(); k++)
       {
         ps.println(FilenameUtilities.removeSuffix(sources.get(k))+"$(OBJECT_SUFFIX): "+sources.get(k)+" "+ListUtilities.listToString(depends));
@@ -199,7 +203,7 @@ public class MakefileExport implements ProjectWriter
       ps.println();
       ps.println(".SUFFIXES: .c $(OBJECT_SUFFIX)");
       ps.println(".c$(OBJECT_SUFFIX):");
-      ps.println("\t$(CC) $(CFLAGS) -c $<");
+      ps.println("\t$(CC) $(CFLAGS) -o $*$(OBJECT_SUFFIX) -c $<");
       
       counter++;
       ps.close();
