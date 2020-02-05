@@ -97,4 +97,25 @@ public class DefaultProjectInfo implements ProjectInfo
     return targets.get(name);
   }
 
+  @Override
+  public String getVersion()
+  {
+    StringBuffer buffer = new StringBuffer();
+    if (versionMajor!=null)
+    {
+      buffer.append(versionMajor);
+      if (versionMinor!=null)
+      {
+        buffer.append(".");
+        buffer.append(versionMinor);
+        if (versionPatch!=null)
+        {
+          buffer.append(".");
+          buffer.append(versionPatch);
+        }
+      }
+    }
+    return buffer.toString();
+  }
+
 }

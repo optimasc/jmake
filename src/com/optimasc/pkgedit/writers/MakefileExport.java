@@ -45,6 +45,7 @@ public class MakefileExport implements ProjectWriter
   {
     return WRITER_NAME;
   }
+  
 
   @Override
   public void init(ProjectInfo project)
@@ -54,6 +55,11 @@ public class MakefileExport implements ProjectWriter
     macros.put("CMAKE_CURRENT_BINARY_DIR", ".");
     macros.put("CMAKE_SOURCE_DIR", ".");
     macros.put("CMAKE_BINARY_DIR", ".");
+    macros.put("PROJECT_NAME",project.getName());
+    if (project.getVersion().length()>0)
+    {
+      macros.put("PROJECT_VERSION", project.getVersion());
+    }
   }
   
   /** Write a macro definition 
@@ -128,7 +134,6 @@ public class MakefileExport implements ProjectWriter
       ps.println("CC=gcc");
       ps.println("AR=ar");
       ps.println("ARFLAGS=rs");
-      ps.println("COMPILE_OPTIONS=-W -O");
 
       ps.println("# Generic definitions ");
       

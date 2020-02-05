@@ -109,6 +109,25 @@ public class CMakeFileImport implements CMakeCommandVisitor
     }
     return value;
   }
+  
+  protected String expandGeneratorVariables(String str)
+  {
+    String value = new String(str);
+
+    /* Install interface is not supported, only build interface */
+    if (value.startsWith("$<INSTALL_INTERFACE:"))
+    {
+      return "";
+    }
+    
+    /* Install interface is not supported, only build interface */
+    if (value.startsWith("$<BUILD_INTERFACE:"))
+    {
+      return value.substring("$<BUILD_INTERFACE:".length(), str.length()-1);
+    }
+    return value;
+  }
+  
 
   /** Completely expand variables. */
   protected String expandVariables(String str)
@@ -391,7 +410,7 @@ public class CMakeFileImport implements CMakeCommandVisitor
       
     } else
     {
-      error(cmd, "Unsupported +'"+args.get(0)+"' install type.");
+      warning(cmd, "Unsupported '"+args.get(0)+"' install type.");
     }
     return null;
   }
@@ -420,6 +439,7 @@ public class CMakeFileImport implements CMakeCommandVisitor
     Target target = null;
     Vector<String> arguments = null;
     Vector<String> newArguments = null;
+    Vector<String> generatorArguments = null;
     StringBuffer stringBuffer = new StringBuffer();
     for (int i = 0; i < elements.size(); i++)
     {
@@ -437,6 +457,18 @@ public class CMakeFileImport implements CMakeCommandVisitor
         }
       }
       arguments = newArguments;
+      /* expand generator expressions */
+      generatorArguments = new Vector<String>();
+      for (int j = 0; j < arguments.size(); j++)
+      {
+        value = expandGeneratorVariables(arguments.elementAt(j));
+        if (value.length()>0)
+        {
+          generatorArguments.add(value);
+        }
+      }
+      arguments = generatorArguments;
+      
 
       if (cmd.getName().equals(COMMAND_TARGET_COMPILE_DEFINITIONS))
       {
@@ -531,6 +563,65 @@ public class CMakeFileImport implements CMakeCommandVisitor
         for (int j = 0; j < arguments.size(); j++)
         {
           compileOptions += " " + arguments.elementAt(j);
+        }
+      }
+      else if (cmd.getName().equals(COMMAND_PROJECT))
+      {
+        if (arguments.size()==0)
+        {
+          error(cmd,"Project name not defined.");
+        }
+        else
+        {
+           value = arguments.elementAt(0);
+           project.setName(value);
+           if (arguments.size() > 2)
+           {
+             value = arguments.elementAt(1);
+             if (value.equals("VERSION"))
+             {
+               /* get the version information */
+               value = arguments.elementAt(2);
+               String version[] = value.split("\\.");
+               if (version.length == 0)
+               {
+                 error(cmd, "'VERSION' has missing components.");
+               }
+               if (version.length > 0)
+               {
+                 try 
+                 {
+                   int intValue = Integer.parseInt(version[0]);
+                 } catch (NumberFormatException e)
+                 {
+                   error(cmd, "'VERSION' components must be integer values.");
+                 }
+                 project.setVersionMajor(version[0]);
+               }
+               if (version.length > 1)
+               {
+                 try 
+                 {
+                   int intValue = Integer.parseInt(version[1]);
+                 } catch (NumberFormatException e)
+                 {
+                   error(cmd, "'VERSION' components must be integer values.");
+                 }
+                 project.setVersionMinor(version[1]);
+               }
+               if (version.length > 2)
+               {
+                 try 
+                 {
+                   int intValue = Integer.parseInt(version[2]);
+                 } catch (NumberFormatException e)
+                 {
+                   error(cmd, "'VERSION' components must be integer values.");
+                 }
+                 project.setVersionPatch(version[2]);
+               }
+             }
+           }
         }
       }
       else if (cmd.getName().equals(COMMAND_ADD_DEFINITIONS))

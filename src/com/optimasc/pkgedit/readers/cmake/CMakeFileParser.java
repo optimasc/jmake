@@ -121,6 +121,7 @@ public class CMakeFileParser
     tokenizer.resetSyntax();
     tokenizer.wordChars('a', 'z');
     tokenizer.wordChars('A', 'Z');
+    tokenizer.wordChars('0', '9');
     tokenizer.wordChars(128 + 32, 255);
     tokenizer.whitespaceChars(0, ' ');
     tokenizer.quoteChar('"');
@@ -128,6 +129,9 @@ public class CMakeFileParser
     tokenizer.commentChar(COMMENT_CHAR);
     tokenizer.wordChars('_', '_');
     tokenizer.wordChars('$', '$');
+    tokenizer.wordChars('<', '<');
+    tokenizer.wordChars(':', ':');
+    tokenizer.wordChars('>', '>');
     tokenizer.wordChars('{', '{');
     tokenizer.wordChars('}', '}');
     tokenizer.wordChars('/', '/');

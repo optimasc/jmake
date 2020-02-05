@@ -19,4 +19,9 @@ public interface ProjectInfo
     public Map<String,Target> getTargets();
     /** Return a specific target. */
     public Target getTarget(String name);
+    /** Returns the full version string, as a semantic version
+     *  string or an empty string if the version information
+     *  is not defined.
+     */
+    public String getVersion();
 }
