@@ -6,8 +6,9 @@ Overview
 jmake is a simple java application that generates build scripts based 
 on CMake compatible CMakeLists.txt files.
 
-It only supports a strict subset of CMake 3.0.2 commands, just enough 
+It only supports a strict subset of CMake 3.X commands, just enough 
 to generate proper build scripts, and only supports in source compilation.
+Other commands are simply ignored.
 
 It either should be run in the location where the CMakeLists.txt is 
 located and it will be automatically be processed or a complete path 
@@ -78,7 +79,10 @@ target_include_directories(<target> directory1 [directory2 ...]):: Add
  directories to include compilation search path for a specific target.
 target_link_libraries(<target> item1 [item2 ...]):: Add libraries for 
  linker to link with for specific executable target.
-
+project(<project-name> [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]] 
+ [LANGUAGES <language-name>...])::
+  Set a name and version of the entire project.
+  
 Supported CMake variables
 -------------------------
 
@@ -86,3 +90,10 @@ CMAKE_CURRENT_SOURCE_DIR:: Replaced by ".".
 CMAKE_CURRENT_BINARY_DIR:: Replaced by ".".
 CMAKE_SOURCE_DIR:: Replaced by "."
 CMAKE_BINARY_DIR:: Replaced by "."
+PROJECT_NAME : Replaced by the project name as defined in the project() command
+PROJECT_VERSION : Replaced by the project version as defined in the project() if it is defined.
+
+Supported Geneator expressions
+------------------------------
+$<INSTALL_INTERFACE:...>: Replaced by empty string.
+$<BUILD_INTERFACE:...>: Supported and added in output.
